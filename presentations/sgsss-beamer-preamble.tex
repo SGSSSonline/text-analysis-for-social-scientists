@@ -1,0 +1,95 @@
+% SGSSS Beamer Preamble — shared across all lectures
+% Brand colours from SGSSS logo
+
+\usetheme{metropolis}
+
+% --- Colour definitions ---
+\definecolor{sgsssMagenta}{HTML}{A3217A}
+\definecolor{sgsssGreen}{HTML}{2D6A3F}
+\definecolor{sgsssBlack}{HTML}{1D1D1B}
+\definecolor{sgsssWhite}{HTML}{FFFFFF}
+\definecolor{sgsssLightGrey}{HTML}{F5F5F5}
+
+% --- Metropolis colour overrides ---
+\setbeamercolor{palette primary}{bg=sgsssMagenta, fg=sgsssWhite}
+\setbeamercolor{title separator}{fg=sgsssGreen}
+\setbeamercolor{progress bar}{fg=sgsssGreen, bg=sgsssLightGrey}
+\setbeamercolor{frametitle}{bg=sgsssMagenta, fg=sgsssWhite}
+\setbeamercolor{alerted text}{fg=sgsssMagenta}
+\setbeamercolor{example text}{fg=sgsssGreen}
+\setbeamercolor{block title}{bg=sgsssMagenta, fg=sgsssWhite}
+\setbeamercolor{block body}{bg=sgsssLightGrey, fg=sgsssBlack}
+\setbeamercolor{block title example}{bg=sgsssGreen, fg=sgsssWhite}
+\setbeamercolor{block body example}{bg=sgsssLightGrey, fg=sgsssBlack}
+\setbeamercolor{block title alerted}{bg=sgsssMagenta, fg=sgsssWhite}
+\setbeamercolor{block body alerted}{bg=sgsssLightGrey, fg=sgsssBlack}
+\setbeamercolor{normal text}{fg=sgsssBlack}
+
+% --- Fonts ---
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault]{FiraSans}
+\usepackage{FiraMono}
+\setbeamerfont{frametitle}{size=\large}
+
+% --- Packages ---
+\usepackage{graphicx}
+\usepackage{bookmark}
+\hypersetup{
+    bookmarks=true,
+    bookmarksopen=true,
+    bookmarksdepth=2,
+    pdfpagemode=UseOutlines,
+}
+% --- PDF bookmarks for each frame title ---
+\makeatletter
+\apptocmd{\beamer@@frametitle}{%
+  \only<1>{\bookmark[page=\the\c@page,level=1]{#1}}%
+}{}{}
+\makeatother
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{minted}
+\usepackage{fontawesome5}
+
+% --- TikZ ---
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, trees, calc, decorations.pathmorphing, decorations.pathreplacing, fit, backgrounds}
+
+% Reusable TikZ styles
+\tikzset{
+    server node/.style={rectangle, draw=sgsssGreen, fill=sgsssGreen!10, thick, minimum width=2.5cm, minimum height=1.2cm, align=center, font=\small},
+    client node/.style={rectangle, draw=sgsssMagenta, fill=sgsssMagenta!10, thick, minimum width=2.5cm, minimum height=1.2cm, align=center, font=\small},
+    api node/.style={rectangle, draw=sgsssGreen, fill=sgsssGreen!15, thick, rounded corners, minimum width=2.5cm, minimum height=1.2cm, align=center, font=\small},
+    data node/.style={rectangle, draw=sgsssBlack, fill=sgsssLightGrey, thick, minimum width=2cm, minimum height=1cm, align=center, font=\small},
+    arrow style/.style={-{Stealth[length=3mm]}, thick, sgsssBlack},
+    html tag/.style={rectangle, draw=sgsssMagenta, fill=sgsssMagenta!8, rounded corners=2pt, font=\ttfamily\small, inner sep=4pt},
+    json key/.style={rectangle, draw=sgsssGreen, fill=sgsssGreen!8, rounded corners=2pt, font=\ttfamily\small, inner sep=4pt},
+}
+
+% --- Minted configuration ---
+\setminted{
+    fontsize=\footnotesize,
+    frame=leftline,
+    framesep=2mm,
+    baselinestretch=1.1,
+    bgcolor=sgsssLightGrey,
+    breaklines,
+    linenos=false,
+}
+\setminted[python]{style=friendly}
+\setminted[r]{style=friendly}
+
+% --- Convenience commands ---
+\newcommand{\pythoncode}[1]{\mintinline{python}{#1}}
+\newcommand{\rcode}[1]{\mintinline{r}{#1}}
+\newcommand{\httpstatus}[2]{\texttt{#1} \textit{#2}}
+
+% --- Footer (page numbers only; logo on title slide only) ---
+\setbeamertemplate{frame footer}{%
+    \insertframenumber/\inserttotalframenumber%
+}
+
+% --- Metadata ---
+\author{Dr Diarmuid McDonnell}
+\institute{Braw Data Ltd \and Gradel Institute of Charity, University of Oxford}
+\date{27 March 2026}

@@ -1,5 +1,8 @@
-# LaTeX source files
+# LaTeX source files (tracked via negation rules below)
 *.tex
+
+# But DO track presentation source files
+!presentations/*.tex
 
 # LaTeX build artifacts
 *.aux
