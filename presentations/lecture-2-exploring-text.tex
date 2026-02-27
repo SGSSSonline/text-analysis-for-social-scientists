@@ -1,0 +1,202 @@
+\documentclass[aspectratio=169]{beamer}
+\input{sgsss-beamer-preamble}
+
+\title{Exploring Text: Descriptive Approaches}
+\subtitle{SGSSS Training Course}
+
+\begin{document}
+
+% -------------------------------------------------------
+% Slide 1: Section title
+% -------------------------------------------------------
+{
+\setbeamertemplate{frame footer}{}
+\begin{frame}[plain]
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large\bfseries\color{sgsssMagenta} Exploring Text}\\[0.3cm]
+        {\large Descriptive Approaches}\\[0.8cm]
+        {\normalsize Dr Diarmuid McDonnell}\\[0.1cm]
+        {\small Braw Data Ltd \(\cdot\) Gradel Institute of Charity, University of Oxford}\\[0.3cm]
+        {\small 27 March 2026}
+    \end{center}
+\end{frame}
+}
+
+% -------------------------------------------------------
+% Slide 2: Why explore before modelling?
+% -------------------------------------------------------
+\begin{frame}{Why Explore Before Modelling?}
+    \begin{alertblock}{Key idea}
+        Just as we compute descriptive statistics before running regressions, we should \textbf{explore text} before applying complex models.
+    \end{alertblock}
+
+    \begin{itemize}\setlength\itemsep{0pt}
+        \item \faIcon{search} \textbf{Understand your data} --- identify patterns, outliers, and data-quality issues early
+        \item \faIcon{bug} \textbf{Catch preprocessing errors} --- missing documents, encoding problems, unexpected languages
+        \item \faIcon{lightbulb} \textbf{Generate hypotheses} --- exploratory analysis reveals structure that informs modelling choices
+    \end{itemize}
+
+    \vspace{0.2cm}
+    {\small Descriptive text analysis is valuable in its own right --- not merely a stepping stone to fancier methods.}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 3: Word frequencies
+% -------------------------------------------------------
+\begin{frame}{Word Frequencies}
+    \small
+    \begin{columns}[T]
+        \begin{column}{0.52\textwidth}
+            \textbf{What they show:}
+            \begin{itemize}\setlength\itemsep{0pt}
+                \item Which terms dominate a corpus
+                \item Differences across groups or time periods
+                \item Raw counts or relative frequencies
+            \end{itemize}
+
+            \vspace{0.2cm}
+            \textbf{\color{sgsssGreen} Zipf's law:} a small number of words account for most tokens; most words are rare.
+
+            \vspace{0.2cm}
+            \begin{alertblock}{Limitations}
+                \footnotesize
+                High-frequency words are often \textbf{stopwords}. Stemming and lemmatisation choices affect counts.
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.44\textwidth}
+            \begin{exampleblock}{Example: Top 5 terms}
+                \footnotesize
+                \begin{tabular}{@{}lr@{}}
+                    \toprule
+                    \textbf{Term} & \textbf{Frequency} \\
+                    \midrule
+                    government  & 1{,}842 \\
+                    member      & 1{,}536 \\
+                    minister    & 1{,}204 \\
+                    people      &   987 \\
+                    policy      &   763 \\
+                    \bottomrule
+                \end{tabular}
+            \end{exampleblock}
+            {\scriptsize After stopword removal; UK parliamentary debates.}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 4: Word clouds
+% -------------------------------------------------------
+\begin{frame}{Word Clouds}
+    \begin{columns}[T]
+        \begin{column}{0.50\textwidth}
+            \textbf{\color{sgsssGreen} Strengths}
+            \begin{itemize}
+                \item \faIcon{eye} Intuitive and visually engaging
+                \item Quick overview of dominant terms
+                \item Useful for presentations to non-technical audiences
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.50\textwidth}
+            \textbf{\color{sgsssMagenta} Limitations}
+            \begin{itemize}
+                \item \faIcon{exclamation-triangle} No information about \textbf{context}
+                \item Word size is hard to compare precisely
+                \item Layout is arbitrary --- can mislead
+                \item Not reproducible across runs (random placement)
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.4cm}
+    \begin{alertblock}{Rule of thumb}
+        Word clouds are for \textbf{communication}, not \textbf{analysis}. Always supplement with frequency tables or bar charts.
+    \end{alertblock}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 5: Keywords-in-context (KWIC)
+% -------------------------------------------------------
+\begin{frame}[fragile]{Keywords-in-Context (KWIC)}
+    \begin{block}{Definition}
+        Concordance lines showing a \textbf{target word} with its surrounding context, revealing \textit{how} terms are used --- not just how often.
+    \end{block}
+
+    \vspace{0.1cm}
+    \begin{exampleblock}{Example: ``immigration'' in parliamentary debates}
+        \footnotesize
+        \begin{verbatim}
+  ...controls on  immigration  are essential to...
+  ...debate about  immigration  has become too...
+  ...the impact of immigration  on public services...
+  ...reduce illegal immigration  through cooperation...\end{verbatim}
+    \end{exampleblock}
+
+    {\small \faIcon{info-circle} KWIC reveals framing, sentiment, and collocational patterns that frequency counts alone miss.}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 6: Collocations and n-grams
+% -------------------------------------------------------
+\begin{frame}{Collocations and N-grams}
+    \small
+    \begin{alertblock}{Key idea}
+        Words that \textbf{co-occur more than expected by chance} carry meaning beyond individual terms.
+    \end{alertblock}
+
+    \vspace{-0.1cm}
+    \begin{description}[\textbf{Trigrams}]\setlength\itemsep{0pt}
+        \item[\textbf{Bigrams}] Two-word sequences: \textit{climate change}, \textit{prime minister}
+        \item[\textbf{Trigrams}] Three-word sequences: \textit{cost of living}, \textit{United Nations Security}
+    \end{description}
+
+    \vspace{-0.1cm}
+    \textbf{Identifying meaningful collocations:}
+    \begin{itemize}\setlength\itemsep{0pt}
+        \item Raw co-occurrence counts (biased towards frequent words)
+        \item \textbf{Pointwise Mutual Information (PMI)} --- how much more often words co-occur than expected under independence
+        \item Chi-squared and log-likelihood tests
+    \end{itemize}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 7: Lexical diversity
+% -------------------------------------------------------
+\begin{frame}{Lexical Diversity}
+    \small
+    \begin{block}{Type--Token Ratio (TTR)}
+        \(\text{TTR} = \frac{\text{Number of unique types}}{\text{Total number of tokens}}\)
+        \quad --- a higher TTR indicates a \textbf{richer, more varied vocabulary}.
+    \end{block}
+
+    \textbf{Applications in social science:}
+    \begin{itemize}\setlength\itemsep{0pt}
+        \item Comparing \textbf{vocabulary richness} across political speakers
+        \item Tracking linguistic complexity over time
+        \item Assessing readability of policy documents
+    \end{itemize}
+
+    \begin{alertblock}{Caveat}
+        \footnotesize
+        TTR is sensitive to \textbf{document length} --- longer texts tend to have lower TTR. Use standardised measures (e.g., MATTR, moving-average TTR) when comparing texts of different lengths.
+    \end{alertblock}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 8: Next up
+% -------------------------------------------------------
+\begin{frame}{Next Up}
+    \begin{center}
+        {\Large \alert{Practical 2: Descriptive Text Analysis}}\\[0.5cm]
+        \begin{itemize}
+            \item Compute and visualise word frequencies
+            \item Generate KWIC concordance lines
+            \item Identify collocations and n-grams
+            \item Measure lexical diversity across speakers
+        \end{itemize}
+        \vspace{0.5cm}
+        {\normalsize Open the \textbf{Practical 2} notebook in Google Colab\\(Python or R --- your choice!)}
+    \end{center}
+\end{frame}
+
+\end{document}
