@@ -1,0 +1,46 @@
+# LaTeX source files
+*.tex
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+_minted-*/
+_minted/
+*.config.minted
+*.style.minted
+*.highlight.minted
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Downloads created by notebooks
+downloads/
+data/
+
+# Internal docs (design docs, plans)
+docs/
+
+# Admin documents (not for public distribution)
+admin/
+
+# Previous course materials (reference only)
+previous-course/
