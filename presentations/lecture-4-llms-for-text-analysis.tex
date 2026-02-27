@@ -1,0 +1,192 @@
+\documentclass[aspectratio=169]{beamer}
+\input{sgsss-beamer-preamble}
+
+\title{LLMs for Text Analysis}
+\subtitle{SGSSS Training Course}
+
+\begin{document}
+
+% -------------------------------------------------------
+% Slide 1: Section title
+% -------------------------------------------------------
+{
+\setbeamertemplate{frame footer}{}
+\begin{frame}[plain]
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large\bfseries\color{sgsssMagenta} LLMs for Text Analysis}\\[0.3cm]
+        {\large Using Large Language Models in Social Science Research}\\[0.8cm]
+        {\normalsize Dr Diarmuid McDonnell}\\[0.1cm]
+        {\small Braw Data Ltd \(\cdot\) Gradel Institute of Charity, University of Oxford}\\[0.3cm]
+        {\small 27 March 2026}
+    \end{center}
+\end{frame}
+}
+
+% -------------------------------------------------------
+% Slide 2: What are LLMs?
+% -------------------------------------------------------
+\begin{frame}{What Are LLMs?}
+    \begin{block}{Definition}
+        \textbf{Large Language Models} are neural networks trained on massive text corpora, capable of understanding and generating human language.
+    \end{block}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{\color{sgsssMagenta} Proprietary (API access)}
+            \begin{itemize}\setlength\itemsep{0pt}
+                \item \faIcon{cloud} GPT-4 (OpenAI)
+                \item \faIcon{cloud} Claude (Anthropic)
+                \item \faIcon{cloud} Gemini (Google)
+            \end{itemize}
+            {\footnotesize Pay per use; hosted remotely; no model weights shared.}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{\color{sgsssGreen} Open-weight (run locally)}
+            \begin{itemize}\setlength\itemsep{0pt}
+                \item \faIcon{download} Llama (Meta)
+                \item \faIcon{download} Mistral
+                \item \faIcon{download} Qwen (Alibaba)
+            \end{itemize}
+            {\footnotesize Free to download; run on your own hardware; full control.}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.2cm}
+    {\small \faIcon{info-circle} For research: choice depends on \textbf{budget}, \textbf{data sensitivity}, and \textbf{reproducibility} needs.}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 3: LLMs as text analysis tools
+% -------------------------------------------------------
+\begin{frame}{LLMs as Text Analysis Tools}
+    \small
+    \begin{exampleblock}{\faIcon{tags} (a) Zero-shot classification}
+        Classify text \textbf{without any training data} --- just describe the categories in a prompt.\\
+        {\footnotesize \textit{Example:} ``Classify this tweet as positive, negative, or neutral.''}
+    \end{exampleblock}
+
+    \begin{exampleblock}{\faIcon{compress-alt} (b) Summarisation}
+        Condense long documents into concise summaries while preserving key information.\\
+        {\footnotesize \textit{Example:} ``Summarise this parliamentary debate in three bullet points.''}
+    \end{exampleblock}
+
+    \begin{exampleblock}{\faIcon{highlighter} (c) Annotation / coding}
+        Apply a structured \textbf{coding scheme} to text, replicating manual qualitative coding.\\
+        {\footnotesize \textit{Example:} ``Code this paragraph for policy frames: economic, moral, or rights-based.''}
+    \end{exampleblock}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 4: Prompt engineering for research
+% -------------------------------------------------------
+\begin{frame}[fragile]{Prompt Engineering for Research}
+    \small
+    \textbf{Key principles:}
+    \begin{itemize}\setlength\itemsep{0pt}
+        \item \faIcon{bullseye} \textbf{Be specific} --- define the task, audience, and expected output
+        \item \faIcon{book} \textbf{Provide context} --- include background information and definitions
+        \item \faIcon{list-ol} \textbf{Use examples} (few-shot) --- show input--output pairs
+        \item \faIcon{code} \textbf{Request structured output} --- ask for JSON, CSV, or tables
+    \end{itemize}
+
+    \vspace{0.1cm}
+    \begin{columns}[T]
+        \begin{column}{0.47\textwidth}
+            \begin{alertblock}{Vague prompt}
+                \footnotesize
+\begin{verbatim}
+What is this text about?
+\end{verbatim}
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.47\textwidth}
+            \begin{block}{Effective prompt}
+                \footnotesize
+\begin{verbatim}
+Classify this text as: economy,
+health, or security. Return JSON:
+{"label": "...", "conf": "..."}
+\end{verbatim}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 5: Strengths and limitations
+% -------------------------------------------------------
+\begin{frame}{Strengths and Limitations}
+    \small
+    \vspace{-0.1cm}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{\color{sgsssGreen} Strengths}
+            \begin{itemize}\setlength\itemsep{0pt}
+                \item \faIcon{magic} \textbf{Flexible} --- adapt via prompts
+                \item \faIcon{ban} \textbf{No training data} --- zero/few-shot
+                \item \faIcon{brain} \textbf{Handles nuance} --- context, irony
+                \item \faIcon{globe} \textbf{Multilingual} --- many languages
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{\color{sgsssMagenta} Limitations}
+            \begin{itemize}\setlength\itemsep{0pt}
+                \item \faIcon{pound-sign} \textbf{Cost} --- API calls add up
+                \item \faIcon{dice} \textbf{Reproducibility} --- stochastic
+                \item \faIcon{exclamation-triangle} \textbf{Hallucination} --- confident but wrong
+                \item \faIcon{lock} \textbf{Black box} --- hard to explain
+                \item \faIcon{ruler-horizontal} \textbf{Context limits} --- finite window
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.15cm}
+    \begin{alertblock}{Bottom line}
+        LLMs are powerful but require \textbf{careful validation} against human judgements --- especially for high-stakes research.
+    \end{alertblock}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 6: Comparing LLMs to traditional methods
+% -------------------------------------------------------
+\begin{frame}{Comparing LLMs to Traditional Methods}
+    \footnotesize
+    \begin{center}
+        \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{2.3cm}>{\raggedright\arraybackslash}p{2.3cm}@{}}
+            \toprule
+            & \textbf{Dictionary} & \textbf{Topic models} & \textbf{Supervised} & \textbf{LLMs} \\
+            \midrule
+            \textbf{Training data}  & None (lexicon) & None            & Large labelled set & None (zero-shot) \\
+            \textbf{Setup effort}   & Low            & Medium          & High               & Low--medium \\
+            \textbf{Nuance}         & Low            & Medium          & High               & High \\
+            \textbf{Reproducibility}& Perfect        & Variable        & High               & Low (stochastic) \\
+            \textbf{Cost at scale}  & Negligible     & Moderate        & Low (post-train)   & High (API) \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+
+    \vspace{0.2cm}
+    \begin{alertblock}{Key message}
+        LLMs \textbf{complement} traditional methods --- they do not replace them. Use the right tool for the right task, and \textbf{validate} across approaches.
+    \end{alertblock}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 7: Next up
+% -------------------------------------------------------
+\begin{frame}{Next Up}
+    \begin{center}
+        {\Large \alert{Practical 4: LLM-Assisted Text Analysis}}\\[0.5cm]
+        \begin{itemize}
+            \item Use an LLM API to classify text at scale
+            \item Experiment with prompt design and few-shot examples
+            \item Compare LLM annotations with human-coded labels
+            \item Discuss reproducibility and validation strategies
+        \end{itemize}
+        \vspace{0.5cm}
+        {\normalsize Open the \textbf{Practical 4} notebook in Google Colab\\(Python or R --- your choice!)}
+    \end{center}
+\end{frame}
+
+\end{document}
