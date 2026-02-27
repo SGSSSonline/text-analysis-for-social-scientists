@@ -39,17 +39,17 @@ You need a Google account to be able to run the code notebooks. Once you have a 
 
 #### Python
 
-* Practical 1: Preprocessing Text [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis/blob/main/code/practical-1-preprocessing-text-2026-03-27-Python.ipynb)
-* Practical 2: Descriptive Text Analysis [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis/blob/main/code/practical-2-descriptive-text-analysis-2026-03-27-Python.ipynb)
-* Practical 3: Topic Modelling [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis/blob/main/code/practical-3-topic-modelling-2026-03-27-Python.ipynb)
-* Practical 4: LLM-Assisted Text Analysis [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis/blob/main/code/practical-4-llm-text-analysis-2026-03-27-Python.ipynb)
+* Practical 1: Preprocessing Text [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis-for-social-scientists/blob/main/code/practical-1-preprocessing-text-2026-03-27-Python.ipynb)
+* Practical 2: Descriptive Text Analysis [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis-for-social-scientists/blob/main/code/practical-2-descriptive-text-analysis-2026-03-27-Python.ipynb)
+* Practical 3: Topic Modelling [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis-for-social-scientists/blob/main/code/practical-3-topic-modelling-2026-03-27-Python.ipynb)
+* Practical 4: LLM-Assisted Text Analysis [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis-for-social-scientists/blob/main/code/practical-4-llm-text-analysis-2026-03-27-Python.ipynb)
 
 #### R
 
-* Practical 1: Preprocessing Text [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis/blob/main/code/practical-1-preprocessing-text-2026-03-27-R.ipynb)
-* Practical 2: Descriptive Text Analysis [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis/blob/main/code/practical-2-descriptive-text-analysis-2026-03-27-R.ipynb)
-* Practical 3: Topic Modelling [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis/blob/main/code/practical-3-topic-modelling-2026-03-27-R.ipynb)
-* Practical 4: LLM-Assisted Text Analysis [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis/blob/main/code/practical-4-llm-text-analysis-2026-03-27-R.ipynb)
+* Practical 1: Preprocessing Text [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis-for-social-scientists/blob/main/code/practical-1-preprocessing-text-2026-03-27-R.ipynb)
+* Practical 2: Descriptive Text Analysis [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis-for-social-scientists/blob/main/code/practical-2-descriptive-text-analysis-2026-03-27-R.ipynb)
+* Practical 3: Topic Modelling [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis-for-social-scientists/blob/main/code/practical-3-topic-modelling-2026-03-27-R.ipynb)
+* Practical 4: LLM-Assisted Text Analysis [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SGSSSonline/text-analysis-for-social-scientists/blob/main/code/practical-4-llm-text-analysis-2026-03-27-R.ipynb)
 
 ### Presentations
 
