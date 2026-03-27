@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neural Networks & Transformers — Visual Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  --bg:#FFFFFF;
+  --surface:#F5F5F5;
+  --surface2:#EBEBEB;
+  --border:#D4D4D4;
+  --border-hi:#A3217A;
+  --text:#1D1D1B;
+  --text-muted:#4A4A4A;
+  --text-dim:#888888;
+  --magenta:#A3217A;
+  --magenta-dim:#7a1a5c;
+  --green:#2D6A3F;
+  --green-dim:#1f4f2f;
+  --green-light:#4a9a60;
+  --black:#1D1D1B;
+}
+
+body{font-family:'Fira Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px;min-height:100vh;}
+
+/* ── HEADER ── */
+header{
+  padding:3.5rem 2rem 2.5rem;
+  text-align:center;
+  background:var(--magenta);
+  border-bottom:3px solid var(--green);
+  position:relative;
+  overflow:hidden;
+}
+.header-eyebrow{
+  font-family:'Fira Mono',monospace;
+  font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,0.75);margin-bottom:1rem;
+}
+header h1{
+  font-family:'Fira Sans',sans-serif;
+  font-size:clamp(1.8rem,4vw,3rem);
+  font-weight:600;color:#FFFFFF;
+  line-height:1.15;position:relative;
+}
+header h1 em{font-style:italic;color:rgba(255,255,255,0.85);}
+header p{color:rgba(255,255,255,0.8);margin-top:0.7rem;font-size:0.95rem;font-weight:300;position:relative;}
+
+/* ── NAV ── */
+nav{
+  display:flex;justify-content:center;flex-wrap:wrap;
+  background:var(--surface);
+  border-bottom:2px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+nav button{
+  background:none;border:none;color:var(--text-muted);
+  padding:0.9rem 1.4rem;
+  font-family:'Fira Sans',sans-serif;font-size:0.82rem;font-weight:500;
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all 0.2s;letter-spacing:0.3px;
+}
+nav button:hover{color:var(--text);}
+nav button.active{color:var(--magenta);border-bottom-color:var(--magenta);}
+
+/* ── MAIN ── */
+main{max-width:920px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.section{display:none;}
+.section.active{display:block;animation:fadeUp 0.4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+h2{font-family:'Fira Sans',sans-serif;font-size:1.9rem;font-weight:600;margin-bottom:0.3rem;color:var(--text);}
+.subtitle{color:var(--text-muted);font-size:0.9rem;margin-bottom:2rem;padding-bottom:1.2rem;border-bottom:2px solid var(--magenta);font-style:italic;}
+h3{font-family:'Fira Sans',sans-serif;font-size:1.15rem;font-weight:600;margin:2rem 0 0.7rem;color:var(--magenta);}
+p{margin-bottom:1rem;color:var(--text-muted);font-weight:300;}
+
+.callout{
+  background:var(--surface);border-left:3px solid var(--magenta);
+  padding:1rem 1.2rem;margin:1.5rem 0;border-radius:0 8px 8px 0;font-size:0.92rem;
+}
+.callout.blue{border-left-color:var(--green);}
+.callout.green{border-left-color:var(--green);}
+.callout strong.label{
+  display:block;margin-bottom:0.4rem;font-size:0.72rem;
+  text-transform:uppercase;letter-spacing:1px;color:var(--magenta);font-weight:600;
+}
+.callout.blue strong.label{color:var(--green);}
+.callout.green strong.label{color:var(--green);}
+
+/* ═══════════════════════════════════
+   NEURON DEMO — ANIMATED SVG
+═══════════════════════════════════ */
+.neuron-container{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:1.8rem;margin:2rem 0;
+}
+#neuronSvg{width:100%;max-width:640px;display:block;margin:0 auto;}
+
+.input-controls{display:flex;flex-direction:column;gap:0.7rem;margin-top:1.5rem;}
+.ctrl-row{display:grid;grid-template-columns:160px 1fr 48px 100px;gap:0.8rem;align-items:center;}
+@media(max-width:580px){.ctrl-row{grid-template-columns:1fr;}}
+.ctrl-label{font-size:0.85rem;color:var(--text-muted);}
+.ctrl-row input[type=range]{
+  -webkit-appearance:none;appearance:none;
+  height:4px;border-radius:4px;background:var(--border);outline:none;cursor:pointer;
+}
+.ctrl-row input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--green);cursor:pointer;transition:background 0.2s;
+}
+.ctrl-val{font-family:'Fira Mono',monospace;font-size:0.82rem;color:var(--text-muted);text-align:right;}
+.ctrl-badge{
+  font-size:0.75rem;font-weight:500;padding:0.2rem 0.6rem;border-radius:20px;
+  text-align:center;font-family:'Fira Mono',monospace;
+}
+
+.neuron-result{
+  display:flex;align-items:center;gap:1.2rem;
+  margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--border);
+}
+.result-label{font-size:0.85rem;color:var(--text-muted);white-space:nowrap;}
+.result-bar-track{flex:1;background:var(--surface2);border-radius:20px;height:18px;overflow:hidden;border:1px solid var(--border);}
+.result-bar-fill{height:100%;border-radius:20px;transition:width 0.4s ease,background 0.4s;}
+.result-score{font-family:'Fira Mono',monospace;font-size:0.9rem;width:44px;text-align:right;}
+.result-verdict{font-size:0.9rem;font-weight:500;}
+.result-eq{font-family:'Fira Mono',monospace;font-size:0.75rem;color:var(--text-dim);margin-top:0.6rem;padding:0.5rem 0.8rem;background:var(--surface2);border-radius:6px;border:1px solid var(--border);}
+
+/* ═══════════════════════════════════
+   TRANSFORMER STEP-THROUGH
+═══════════════════════════════════ */
+.transformer-stepthrough{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin:2rem 0;
+}
+.step-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.2rem;border-bottom:1px solid var(--border);
+  background:var(--surface2);
+}
+.step-nav button{
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text-muted);padding:0.4rem 0.9rem;border-radius:6px;
+  font-size:0.82rem;cursor:pointer;transition:all 0.2s;font-family:'Fira Sans',sans-serif;
+}
+.step-nav button:hover:not(:disabled){color:var(--text);border-color:var(--border-hi);}
+.step-nav button:disabled{opacity:0.3;cursor:default;}
+.step-counter{font-family:'Fira Mono',monospace;font-size:0.8rem;color:var(--text-muted);}
+.step-dots{display:flex;gap:0.4rem;}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:all 0.2s;}
+.step-dot.active{background:var(--magenta);}
+
+.step-body{padding:1.5rem;}
+.step-title{font-family:'Fira Sans',sans-serif;font-size:1.15rem;font-weight:600;margin-bottom:0.6rem;color:var(--text);}
+.step-desc{font-size:0.92rem;color:var(--text-muted);font-weight:300;margin-bottom:1.2rem;}
+
+/* Pipeline visual */
+.pipeline-row{display:flex;align-items:center;flex-wrap:wrap;gap:0;justify-content:center;margin-top:1rem;}
+.pipe-node{
+  padding:0.55rem 0.9rem;border-radius:8px;font-size:0.8rem;font-weight:500;
+  border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);
+  text-align:center;min-width:90px;transition:all 0.35s;white-space:nowrap;
+}
+.pipe-node.lit{border-color:var(--magenta);background:rgba(163,33,122,0.08);color:var(--magenta);}
+.pipe-node.done{border-color:var(--green);color:var(--green);background:rgba(45,106,63,0.07);}
+.pipe-arr{color:var(--text-dim);padding:0 0.4rem;font-size:1rem;}
+
+/* Step diagram area */
+.step-diagram{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:1.2rem;margin-top:1rem;min-height:140px;
+  display:flex;align-items:center;justify-content:center;
+}
+#stepSvgWrap svg{display:block;width:100%;max-width:560px;margin:0 auto;}
+
+/* ═══════════════════════════════════
+   SOCIAL SCIENCE SECTION
+═══════════════════════════════════ */
+.usecase-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:2rem 0;}
+@media(max-width:560px){.usecase-grid{grid-template-columns:1fr;}}
+.usecase-card{
+  background:var(--bg);padding:1.3rem;cursor:pointer;transition:background 0.2s;
+  position:relative;overflow:hidden;
+}
+.usecase-card:hover{background:var(--surface);}
+.usecase-card.expanded{background:var(--surface);}
+.uc-header{display:flex;align-items:flex-start;gap:0.8rem;}
+.uc-icon{font-size:1.5rem;flex-shrink:0;margin-top:0.1rem;}
+.uc-name{font-weight:500;font-size:0.95rem;margin-bottom:0.2rem;color:var(--text);}
+.uc-tag{font-family:'Fira Mono',monospace;font-size:0.7rem;color:var(--text-dim);}
+.uc-body{
+  font-size:0.88rem;color:var(--text-muted);font-weight:300;
+  max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.2s;
+  padding-top:0;
+}
+.uc-body.open{max-height:300px;padding-top:0.8rem;}
+.uc-example{
+  margin-top:0.7rem;padding:0.7rem 0.9rem;
+  background:rgba(163,33,122,0.04);border-left:2px solid var(--magenta-dim);
+  border-radius:0 6px 6px 0;font-size:0.83rem;color:var(--text-muted);font-style:italic;
+}
+.uc-tools{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.6rem;}
+.uc-tool{font-family:'Fira Mono',monospace;font-size:0.7rem;padding:0.15rem 0.5rem;border:1px solid var(--green);border-radius:4px;color:var(--green);}
+
+/* Challenge strip */
+.challenge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:2rem 0;}
+@media(max-width:600px){.challenge-grid{grid-template-columns:1fr;}}
+.ch-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem;}
+.ch-card h4{font-size:0.88rem;font-weight:600;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;color:var(--text);}
+.ch-card p{font-size:0.83rem;color:var(--text-muted);margin:0;font-weight:300;}
+
+/* Attention section */
+.attention-demo{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin:2rem 0;}
+.sentence-tokens{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.2rem;}
+.token{
+  padding:0.4rem 0.75rem;border-radius:6px;border:1px solid var(--border);
+  font-family:'Fira Mono',monospace;font-size:0.85rem;
+  cursor:pointer;transition:all 0.2s;background:var(--surface2);color:var(--text-muted);user-select:none;
+}
+.token:hover{border-color:var(--border-hi);color:var(--text);}
+.token.selected{border-color:var(--magenta);background:rgba(163,33,122,0.12);color:var(--magenta);font-weight:500;}
+.token.hi1{background:rgba(45,106,63,0.25);border-color:var(--green);color:var(--text);}
+.token.hi2{background:rgba(45,106,63,0.10);border-color:var(--green-dim);color:#3a7a50;}
+.attn-hint{font-size:0.8rem;color:var(--text-dim);margin-bottom:0.8rem;font-style:italic;}
+.attn-explain{font-size:0.88rem;color:var(--text-muted);min-height:4rem;line-height:1.6;}
+
+/* Glossary */
+.gloss-list{display:flex;flex-direction:column;gap:0.6rem;margin-top:1.5rem;}
+.gloss-item{
+  display:grid;grid-template-columns:160px 1fr;gap:1rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:0.9rem 1.1rem;align-items:start;
+}
+@media(max-width:500px){.gloss-item{grid-template-columns:1fr;}}
+.g-term{font-family:'Fira Mono',monospace;font-size:0.8rem;color:var(--magenta);}
+.g-def{font-size:0.88rem;color:var(--text-muted);font-weight:300;}
+
+/* Summary grid */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;}
+@media(max-width:520px){.two-col{grid-template-columns:1fr;}}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem;}
+.info-card h4{font-family:'Fira Sans',sans-serif;font-size:0.95rem;font-weight:600;margin-bottom:0.5rem;color:var(--magenta);}
+.info-card ul{padding-left:1rem;font-size:0.85rem;color:var(--text-muted);}
+.info-card li{margin-bottom:0.3rem;font-weight:300;}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Research Methods · Text Analysis · LLMs</div>
+  <h1>Neural Networks &amp; <em>Transformers</em></h1>
+  <p>A visual primer for social science researchers</p>
+</header>
+
+<nav>
+  <button class="active" onclick="show('intro')">① Neural Networks</button>
+  <button onclick="show('neuron')">② The Neuron</button>
+  <button onclick="show('transformer')">③ Transformers</button>
+  <button onclick="show('attention')">④ Attention</button>
+  <button onclick="show('applications')">⑤ Social Science Uses</button>
+  <button onclick="show('glossary')">⑥ Glossary</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════ SECTION 1 ══════════════════ -->
+<div id="intro" class="section active">
+  <h2>What is a Neural Network?</h2>
+  <p class="subtitle">The foundational architecture behind every modern language model</p>
+
+  <p>A <strong>neural network</strong> is a mathematical system composed of layers of simple computational units. Rather than encoding hand-written rules, it <em>learns</em> patterns from data — adjusting millions of internal parameters until its outputs match the training examples it has seen.</p>
+  <p>For text, this means a network can learn that the words "failed," "despite," and "outcomes" co-occur in contexts expressing accountability failure — without ever being told what those words mean.</p>
+
+  <div class="callout">
+    <strong class="label">Core intuition</strong>
+    Teaching a child to recognise cats works not by giving them a rulebook, but by repeated exposure. Neural networks learn the same way — from millions of examples — except the "understanding" is encoded as numerical weights rather than mental concepts.
+  </div>
+
+  <h3>Layered architecture</h3>
+  <p>Every network has three functional zones: an <strong>input layer</strong> (raw data as numbers), one or more <strong>hidden layers</strong> (where patterns are extracted progressively), and an <strong>output layer</strong> (a prediction or classification).</p>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2rem;margin:2rem 0;">
+    <svg viewBox="0 0 600 230" xmlns="http://www.w3.org/2000/svg" font-family="Fira Sans, sans-serif" style="width:100%;max-width:600px;display:block;margin:0 auto;">
+      <defs>
+        <radialGradient id="nodeGreen" cx="40%" cy="35%"><stop offset="0%" stop-color="#4a9a60"/><stop offset="100%" stop-color="#1f4f2f"/></radialGradient>
+        <radialGradient id="nodeMagenta" cx="40%" cy="35%"><stop offset="0%" stop-color="#cc5aaa"/><stop offset="100%" stop-color="#7a1a5c"/></radialGradient>
+        <radialGradient id="nodeDark" cx="40%" cy="35%"><stop offset="0%" stop-color="#555555"/><stop offset="100%" stop-color="#1D1D1B"/></radialGradient>
+      </defs>
+      <!-- connections layer 1→2 -->
+      <g opacity="0.18" stroke="#2D6A3F" stroke-width="1">
+        <line x1="75" y1="60" x2="215" y2="45"/><line x1="75" y1="60" x2="215" y2="90"/><line x1="75" y1="60" x2="215" y2="135"/><line x1="75" y1="60" x2="215" y2="180"/>
+        <line x1="75" y1="110" x2="215" y2="45"/><line x1="75" y1="110" x2="215" y2="90"/><line x1="75" y1="110" x2="215" y2="135"/><line x1="75" y1="110" x2="215" y2="180"/>
+        <line x1="75" y1="160" x2="215" y2="45"/><line x1="75" y1="160" x2="215" y2="90"/><line x1="75" y1="160" x2="215" y2="135"/><line x1="75" y1="160" x2="215" y2="180"/>
+      </g>
+      <!-- connections 2→3 -->
+      <g opacity="0.18" stroke="#A3217A" stroke-width="1">
+        <line x1="240" y1="45" x2="365" y2="68"/><line x1="240" y1="45" x2="365" y2="113"/><line x1="240" y1="45" x2="365" y2="158"/>
+        <line x1="240" y1="90" x2="365" y2="68"/><line x1="240" y1="90" x2="365" y2="113"/><line x1="240" y1="90" x2="365" y2="158"/>
+        <line x1="240" y1="135" x2="365" y2="68"/><line x1="240" y1="135" x2="365" y2="113"/><line x1="240" y1="135" x2="365" y2="158"/>
+        <line x1="240" y1="180" x2="365" y2="68"/><line x1="240" y1="180" x2="365" y2="113"/><line x1="240" y1="180" x2="365" y2="158"/>
+      </g>
+      <!-- connections 3→out -->
+      <g opacity="0.25" stroke="#1D1D1B" stroke-width="1.5">
+        <line x1="390" y1="68" x2="500" y2="85"/><line x1="390" y1="68" x2="500" y2="145"/>
+        <line x1="390" y1="113" x2="500" y2="85"/><line x1="390" y1="113" x2="500" y2="145"/>
+        <line x1="390" y1="158" x2="500" y2="85"/><line x1="390" y1="158" x2="500" y2="145"/>
+      </g>
+      <!-- Input nodes -->
+      <circle cx="75" cy="60" r="20" fill="url(#nodeGreen)"/>
+      <circle cx="75" cy="110" r="20" fill="url(#nodeGreen)"/>
+      <circle cx="75" cy="160" r="20" fill="url(#nodeGreen)"/>
+      <!-- Hidden 1 -->
+      <circle cx="228" cy="45" r="20" fill="url(#nodeMagenta)"/>
+      <circle cx="228" cy="90" r="20" fill="url(#nodeMagenta)"/>
+      <circle cx="228" cy="135" r="20" fill="url(#nodeMagenta)"/>
+      <circle cx="228" cy="180" r="20" fill="url(#nodeMagenta)"/>
+      <!-- Hidden 2 -->
+      <circle cx="378" cy="68" r="20" fill="url(#nodeMagenta)"/>
+      <circle cx="378" cy="113" r="20" fill="url(#nodeMagenta)"/>
+      <circle cx="378" cy="158" r="20" fill="url(#nodeMagenta)"/>
+      <!-- Output -->
+      <circle cx="502" cy="85" r="20" fill="url(#nodeDark)"/>
+      <circle cx="502" cy="145" r="20" fill="url(#nodeDark)"/>
+
+      <!-- Labels -->
+      <text x="75" y="197" text-anchor="middle" font-size="11" fill="#2D6A3F" font-weight="500">Input</text>
+      <text x="75" y="210" text-anchor="middle" font-size="9.5" fill="#888888">text → numbers</text>
+      <text x="303" y="210" text-anchor="middle" font-size="11" fill="#A3217A" font-weight="500">Hidden Layers</text>
+      <text x="303" y="223" text-anchor="middle" font-size="9.5" fill="#888888">pattern extraction</text>
+      <text x="502" y="176" text-anchor="middle" font-size="11" fill="#1D1D1B" font-weight="500">Output</text>
+      <text x="502" y="189" text-anchor="middle" font-size="9.5" fill="#888888">prediction</text>
+    </svg>
+  </div>
+
+  <div class="callout blue">
+    <strong class="label">Why does this matter for text?</strong>
+    Text must first be converted into numbers — through <em>embeddings</em>, a kind of high-dimensional map where semantically similar words sit close together. The network then learns the statistical structure of language across this numeric landscape.
+  </div>
+</div>
+
+<!-- ══════════════════ SECTION 2 — NEURON DEMO ══════════════════ -->
+<div id="neuron" class="section">
+  <h2>The Individual Neuron</h2>
+  <p class="subtitle">Every billion-parameter model is built from iterations of this single unit</p>
+
+  <p>A single artificial neuron receives several numeric inputs, multiplies each by a <strong>weight</strong> (its learned importance), sums everything up, and produces an output via an <strong>activation function</strong>. That activation decides whether — and how strongly — the signal propagates forward.</p>
+
+  <div class="callout">
+    <strong class="label">Analogy for researchers</strong>
+    A peer-review committee scoring a grant application. Each criterion (impact, feasibility, originality) receives a different weight from each reviewer. The weighted total determines whether funding is recommended. Training the network means learning which weights produce the best decisions.
+  </div>
+
+  <h3>Interactive neuron — sentiment signal</h3>
+  <p>This neuron estimates how strongly a piece of text signals <em>negative sentiment</em>. Adjust each input and observe how the weighted sum changes, the activation fires, and the verdict updates.</p>
+
+  <div class="neuron-container">
+    <!-- SVG diagram drawn by JS -->
+    <svg id="neuronSvg" viewBox="0 0 600 200"></svg>
+
+    <div class="input-controls">
+      <div class="ctrl-row">
+        <span class="ctrl-label">😠 Anger words</span>
+        <input type="range" id="s1" min="0" max="1" step="0.05" value="0.65" oninput="updateNeuron()">
+        <span class="ctrl-val" id="v1">0.65</span>
+        <span class="ctrl-badge" id="b1" style="background:rgba(163,33,122,0.12);color:#A3217A;">w = +0.80</span>
+      </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">😞 Sad language</span>
+        <input type="range" id="s2" min="0" max="1" step="0.05" value="0.35" oninput="updateNeuron()">
+        <span class="ctrl-val" id="v2">0.35</span>
+        <span class="ctrl-badge" id="b2" style="background:rgba(163,33,122,0.12);color:#A3217A;">w = +0.55</span>
+      </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">❗ Exclamations</span>
+        <input type="range" id="s3" min="0" max="1" step="0.05" value="0.40" oninput="updateNeuron()">
+        <span class="ctrl-val" id="v3">0.40</span>
+        <span class="ctrl-badge" id="b3" style="background:rgba(163,33,122,0.08);color:#7a1a5c;">w = +0.30</span>
+      </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">😊 Positive words</span>
+        <input type="range" id="s4" min="0" max="1" step="0.05" value="0.10" oninput="updateNeuron()">
+        <span class="ctrl-val" id="v4">0.10</span>
+        <span class="ctrl-badge" id="b4" style="background:rgba(45,106,63,0.12);color:#2D6A3F;">w = −0.90</span>
+      </div>
+    </div>
+
+    <div class="neuron-result">
+      <span class="result-label">Negativity:</span>
+      <div class="result-bar-track">
+        <div class="result-bar-fill" id="rBar" style="width:60%;background:var(--green);"></div>
+      </div>
+      <span class="result-score" id="rScore">0.62</span>
+      <span class="result-verdict" id="rVerdict">😕 Negative</span>
+    </div>
+    <div class="result-eq" id="rEq">z = (0.80×0.65) + (0.55×0.35) + (0.30×0.40) − (0.90×0.10) + bias → σ(z) = 0.62</div>
+  </div>
+
+  <h3>Learning = adjusting the weights</h3>
+  <p>When the network predicts wrong, <strong>backpropagation</strong> calculates each weight's contribution to the error and nudges every weight slightly in the right direction — a process called <em>gradient descent</em>. Repeated across millions of examples, the network converges on a useful solution.</p>
+
+  <div class="two-col">
+    <div class="info-card">
+      <h4>What a neuron does</h4>
+      <ul>
+        <li>Receives multiple numeric inputs</li>
+        <li>Multiplies each by a learned weight</li>
+        <li>Sums them with a bias term</li>
+        <li>Passes through an activation function</li>
+        <li>Sends output to the next layer</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>What training does</h4>
+      <ul>
+        <li>Feeds data through the network</li>
+        <li>Compares output to ground truth</li>
+        <li>Computes the loss (error)</li>
+        <li>Backpropagates gradients</li>
+        <li>Repeats for millions of examples</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ SECTION 3 — TRANSFORMER STEP-THROUGH ══════════════════ -->
+<div id="transformer" class="section">
+  <h2>Transformers</h2>
+  <p class="subtitle">The 2017 architecture that made modern LLMs possible — step by step</p>
+
+  <p>Before 2017, neural networks processed text <em>sequentially</em> — one word at a time — struggling with long documents and distant dependencies. Google's "Attention Is All You Need" replaced recurrence with a mechanism that processes <em>all tokens simultaneously</em>, attending to any position in the sequence regardless of distance.</p>
+
+  <div class="callout blue">
+    <strong class="label">Core innovation</strong>
+    Reading a policy document, a researcher simultaneously connects "beneficiaries" to funding figures, outcomes, and geography — wherever they appear. A transformer does this computationally, for every token against every other token, in parallel.
+  </div>
+
+  <h3>Step through the architecture</h3>
+  <p>Use the controls below to walk through what happens when a transformer processes the text <em>"The charity failed to meet its targets despite adequate funding."</em></p>
+
+  <div class="transformer-stepthrough">
+    <div class="step-nav">
+      <button id="btnPrev" onclick="stepTransformer(-1)" disabled>← Prev</button>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem;">
+        <div class="step-dots" id="stepDots"></div>
+        <span class="step-counter" id="stepCounter">Step 1 of 6</span>
+      </div>
+      <button id="btnNext" onclick="stepTransformer(1)">Next →</button>
+    </div>
+    <div class="step-body">
+      <div class="pipeline-row" id="pipelineRow"></div>
+      <div class="step-diagram" id="stepDiagram"></div>
+      <div style="margin-top:1rem;">
+        <div class="step-title" id="stepTitle"></div>
+        <div class="step-desc" id="stepDesc"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <strong class="label">BERT vs GPT</strong>
+    <strong>BERT</strong> uses a bidirectional encoder — every token attends to all others simultaneously. Ideal for classification, entity extraction, and understanding tasks. <strong>GPT</strong> is a unidirectional decoder — predicts the next token from prior context only. Best for text generation. Most social science text analysis tools are BERT-derived.
+  </div>
+</div>
+
+<!-- ══════════════════ SECTION 4 — ATTENTION ══════════════════ -->
+<div id="attention" class="section">
+  <h2>Self-Attention in Action</h2>
+  <p class="subtitle">The mechanism that allows a model to contextualise every token against every other</p>
+
+  <p>For each token, self-attention asks: <em>which other tokens in this sequence are most relevant for understanding this one?</em> The answer is a set of attention scores — used to build a contextualised representation that is unique to its surrounding context.</p>
+  <p>The word "bank" attended to "river" gets a very different representation than "bank" attended to "loan" — this is how transformers disambiguate meaning that bag-of-words models cannot.</p>
+
+  <h3>Interactive attention explorer</h3>
+  <p class="attn-hint">Click any word to reveal its likely attention pattern across the sentence.</p>
+
+  <div class="attention-demo">
+    <div id="attnSent" class="sentence-tokens"></div>
+    <div class="attn-explain" id="attnExplain">← Select a word to explore its attention.</div>
+  </div>
+
+  <div class="callout">
+    <strong class="label">Research implication</strong>
+    In a corpus of charity impact reports, attention allows the model to connect "vulnerable" to "communities," "services," and "funding" — extracting relational meaning that keyword frequency analysis cannot capture. This underpins why transformer-based classifiers substantially outperform TF-IDF baselines on specialised text.
+  </div>
+
+  <h3>Multi-head attention</h3>
+  <p>Transformers run multiple attention operations in parallel (each called a "head"), each capable of capturing a different relationship type: syntactic agreement, semantic proximity, coreference, contrast, and so on. GPT-4 uses 128 heads per layer across 96 layers — providing enormous representational capacity.</p>
+
+  <div class="two-col">
+    <div class="info-card">
+      <h4>What attention captures</h4>
+      <ul>
+        <li>Pronoun–referent resolution</li>
+        <li>Negation and modifier scope</li>
+        <li>Sentiment polarity over distance</li>
+        <li>Domain-specific co-occurrence</li>
+        <li>Contrast and causal links</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>What attention does not do</h4>
+      <ul>
+        <li>It does not "read" like a human</li>
+        <li>It has no persistent memory</li>
+        <li>It learns correlation, not causation</li>
+        <li>It can fail on out-of-distribution text</li>
+        <li>It cannot verify factual claims</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ SECTION 5 — SOCIAL SCIENCE ══════════════════ -->
+<div id="applications" class="section">
+  <h2>LLMs in Social Science Research</h2>
+  <p class="subtitle">Practical use cases — click each card for detail, tools, and a worked example</p>
+
+  <p>LLMs function as scalable <strong>text analysis instruments</strong> — automating tasks that previously required thousands of hours of manual coding. For civil society, policy, and public sector research, the relevant applications span the full analytical pipeline.</p>
+
+  <div class="usecase-grid" id="usecaseGrid"></div>
+
+  <h3>Key methodological challenges</h3>
+  <div class="challenge-grid">
+    <div class="ch-card">
+      <h4><span>⚠️</span> Validity</h4>
+      <p>LLMs trained on general web text may perform poorly on specialist language — third-sector jargon, regulatory filings, policy discourse. Always validate against a human-coded gold standard before deployment.</p>
+    </div>
+    <div class="ch-card">
+      <h4><span>🔍</span> Interpretability</h4>
+      <p>Unlike regression coefficients, attention weights and embeddings are not directly interpretable. Tools like SHAP, LIME, and BERTViz provide partial explanations but do not substitute for construct validity.</p>
+    </div>
+    <div class="ch-card">
+      <h4><span>⚖️</span> Fine-tune vs prompt</h4>
+      <p>Fine-tuning on labelled data gives more reliable results on narrow tasks. Zero/few-shot prompting is faster and cheaper but less consistent. The tradeoff depends on dataset size and task specificity.</p>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <strong class="label">Worked example — CIC report analysis</strong>
+    A researcher with a corpus of 50,000 CIC annual reports could use a fine-tuned BERT classifier to categorise each report's impact claims against IMP dimensions; extract financial uncertainty language via a second classification head; and embed each report as a vector to cluster organisations by thematic proximity — all without manual coding.
+  </div>
+</div>
+
+<!-- ══════════════════ SECTION 6 — GLOSSARY ══════════════════ -->
+<div id="glossary" class="section">
+  <h2>Glossary</h2>
+  <p class="subtitle">Key terminology for neural networks and transformer-based NLP</p>
+  <div class="gloss-list" id="glossList"></div>
+</div>
+
+</main>
+
+<script>
+/* ─── TAB NAVIGATION ─── */
+const TABS = ['intro','neuron','transformer','attention','applications','glossary'];
+function show(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button')[TABS.indexOf(id)].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ─── NEURON SVG ─── */
+function drawNeuronSvg(vals, weights, activation) {
+  const svg = document.getElementById('neuronSvg');
+  const W=600, H=200;
+  const inputs = [{y:40},{y:80},{y:120},{y:160}];
+  const cx=300, cy=100, cr=34;
+  const outX=520, outY=100;
+
+  let lines = inputs.map((inp,i)=>{
+    const strength = Math.abs(weights[i]*vals[i]);
+    const col = weights[i]>0 ? `rgba(163,33,122,${0.2+strength*0.7})` : `rgba(45,106,63,${0.2+strength*0.7})`;
+    const sw = 0.5+strength*3;
+    return `<line x1="60" y1="${inp.y}" x2="${cx-cr}" y2="${cy}" stroke="${col}" stroke-width="${sw}"/>`;
+  }).join('');
+
+  // output line
+  const outCol = `rgba(29,29,27,${0.3+activation*0.6})`;
+  lines += `<line x1="${cx+cr}" y1="${cy}" x2="${outX-20}" y2="${outY}" stroke="${outCol}" stroke-width="${1+activation*3}"/>`;
+
+  // input nodes
+  let nodes = inputs.map((inp,i)=>{
+    const v = vals[i]; const a = 0.3+v*0.7;
+    return `<circle cx="60" cy="${inp.y}" r="16" fill="rgba(45,106,63,${a})" stroke="#2D6A3F" stroke-width="1.5"/>
+            <text x="60" y="${inp.y}" text-anchor="middle" dominant-baseline="middle" font-size="9.5" fill="white" font-family="Fira Mono, monospace">${v.toFixed(2)}</text>`;
+  }).join('');
+
+  // centre neuron (sigma activation)
+  const t = activation;
+  const r = Math.round(163 + t*(163-163));
+  const g = Math.round(33 + t*(33-33));
+  const b2 = Math.round(122 + t*(122-122));
+  // just interpolate from green to magenta based on activation
+  const rC = Math.round(45 + t*(163-45));
+  const gC = Math.round(106 + t*(33-106));
+  const bC = Math.round(63 + t*(122-63));
+  const neuronFill = `rgba(${rC},${gC},${bC},0.85)`;
+  const sigmaBody = `<circle cx="${cx}" cy="${cy}" r="${cr}" fill="${neuronFill}" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+    <text x="${cx}" y="${cy-7}" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="white">σ</text>
+    <text x="${cx}" y="${cy+10}" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="rgba(255,255,255,0.9)" font-family="Fira Mono, monospace">${activation.toFixed(2)}</text>`;
+
+  // output node
+  const outNode = `<circle cx="${outX}" cy="${outY}" r="20" fill="rgba(29,29,27,${0.3+activation*0.6})" stroke="#1D1D1B" stroke-width="1.5"/>
+    <text x="${outX}" y="${outY}" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="white" font-family="Fira Mono, monospace">${activation.toFixed(2)}</text>`;
+
+  // labels
+  const labels = [
+    `<text x="60" y="190" text-anchor="middle" font-size="9" fill="#888888">inputs</text>`,
+    `<text x="${cx}" y="155" text-anchor="middle" font-size="9" fill="#888888">Σ weights → σ</text>`,
+    `<text x="${outX}" y="130" text-anchor="middle" font-size="9" fill="#888888">output</text>`
+  ].join('');
+
+  // weight labels on lines
+  const wLabels = inputs.map((inp,i)=>{
+    const mx = (60+cx-cr)/2; const my = (inp.y+cy)/2;
+    const col = weights[i]>0?'#A3217A':'#2D6A3F';
+    return `<text x="${mx}" y="${my-5}" text-anchor="middle" font-size="8.5" fill="${col}" font-family="Fira Mono, monospace" font-weight="500">${weights[i]>0?'+':''}${weights[i]}</text>`;
+  }).join('');
+
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML = lines+nodes+sigmaBody+outNode+wLabels+labels;
+}
+
+function updateNeuron() {
+  const weights = [0.80, 0.55, 0.30, -0.90];
+  const vals = [1,2,3,4].map(i=>parseFloat(document.getElementById('s'+i).value));
+  vals.forEach((v,i)=>{ document.getElementById('v'+(i+1)).textContent = v.toFixed(2); });
+  const z = weights.reduce((s,w,i)=>s+w*vals[i], 0.05); // 0.05 bias
+  const act = 1/(1+Math.exp(-5*(z-0.35)));
+  const pct = Math.round(act*100);
+  document.getElementById('rBar').style.width = pct+'%';
+  const col = act>0.65?'#A3217A':act<0.35?'#2D6A3F':'#7a1a5c';
+  document.getElementById('rBar').style.background = col;
+  document.getElementById('rScore').textContent = act.toFixed(2);
+  document.getElementById('rVerdict').textContent = act>0.65?'😠 Strongly negative':act>0.45?'😕 Negative':act<0.25?'😊 Positive':'😐 Neutral';
+  const eqParts = weights.map((w,i)=>`(${w>0?'+':''}${w}×${vals[i].toFixed(2)})`).join(' + ');
+  document.getElementById('rEq').textContent = `z = ${eqParts} + 0.05 → σ(${z.toFixed(3)}) = ${act.toFixed(3)}`;
+  drawNeuronSvg(vals, weights, act);
+}
+updateNeuron();
+
+/* ─── TRANSFORMER STEP-THROUGH ─── */
+const STEPS = [
+  {
+    title:'① Tokenisation',
+    pipe: 0,
+    desc: 'The raw text is broken into <strong>tokens</strong> — roughly words or sub-word fragments. Each token is assigned a unique integer ID from the model\'s vocabulary. "funding" might be token #8432; "##ing" a sub-word suffix.',
+    diag: () => tokenDiagram()
+  },
+  {
+    title:'② Embedding',
+    pipe: 1,
+    desc: 'Each token ID is looked up in a learned <strong>embedding matrix</strong>, producing a dense vector of typically 768–4096 numbers. Similar words produce similar vectors — "charity" and "nonprofit" will be close in this high-dimensional space.',
+    diag: () => embedDiagram()
+  },
+  {
+    title:'③ Positional Encoding',
+    pipe: 2,
+    desc: 'Because all tokens are processed in parallel, the model must be told <em>where</em> each token sits. A positional signal is added to each embedding — ensuring "not good" and "good not" have different representations.',
+    diag: () => posDiagram()
+  },
+  {
+    title:'④ Self-Attention',
+    pipe: 3,
+    desc: 'For each token, the model computes a relevance score against every other token, producing a weighted contextual summary. This is the core mechanism — "failed" attends strongly to "charity", "deliver", and "outcomes", capturing clause structure.',
+    diag: () => attnDiagram()
+  },
+  {
+    title:'⑤ Feed-Forward + Stack',
+    pipe: 4,
+    desc: 'After attention, each token passes through an independent feed-forward network (adding further transformation). This full block — attention + feed-forward — is <strong>stacked N times</strong> (12 in BERT-base, 96 in GPT-4), each layer building richer representations.',
+    diag: () => stackDiagram()
+  },
+  {
+    title:'⑥ Output Head',
+    pipe: 5,
+    desc: 'The final token representations pass through a task-specific output layer. For sentiment classification: a softmax over {positive, negative, neutral}. For language modelling: a softmax over the full vocabulary to predict the next token.',
+    diag: () => outputDiagram()
+  }
+];
+
+const PIPE_LABELS = ['Tokenise','Embed','Position','Attention ×N','FF + Stack','Output'];
+let currentStep = 0;
+
+function initTransformer() {
+  const dotsEl = document.getElementById('stepDots');
+  dotsEl.innerHTML = STEPS.map((_,i)=>`<div class="step-dot ${i===0?'active':''}" onclick="goStep(${i})"></div>`).join('');
+  const pipeEl = document.getElementById('pipelineRow');
+  pipeEl.innerHTML = PIPE_LABELS.map((l,i)=>`
+    <div class="pipe-node" id="pn${i}">${l}</div>
+    ${i<PIPE_LABELS.length-1?'<div class="pipe-arr">→</div>':''}
+  `).join('');
+  renderStep(0);
+}
+
+function renderStep(n) {
+  const s = STEPS[n];
+  document.getElementById('stepTitle').innerHTML = s.title;
+  document.getElementById('stepDesc').innerHTML = s.desc;
+  document.getElementById('stepCounter').textContent = `Step ${n+1} of ${STEPS.length}`;
+  document.getElementById('btnPrev').disabled = n===0;
+  document.getElementById('btnNext').disabled = n===STEPS.length-1;
+  document.querySelectorAll('.step-dot').forEach((d,i)=>d.classList.toggle('active',i===n));
+  PIPE_LABELS.forEach((_,i)=>{
+    const el = document.getElementById('pn'+i);
+    el.classList.remove('lit','done');
+    if(i===n) el.classList.add('lit');
+    else if(i<n) el.classList.add('done');
+  });
+  document.getElementById('stepDiagram').innerHTML = s.diag();
+}
+
+function stepTransformer(d){ goStep(currentStep+d); }
+function goStep(n){
+  currentStep = Math.max(0,Math.min(STEPS.length-1,n));
+  renderStep(currentStep);
+}
+
+// Diagram generators
+function tokenDiagram(){
+  const words = ['The','charity','failed','to','meet','its','targets','despite','funding'];
+  const ids =   [1203, 8432,   1834,   2,    3466, 22,    4521,   2943,     7821];
+  return `<div style="width:100%;">
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:0.8rem;">
+      ${words.map((w,i)=>`<div style="text-align:center;">
+        <div style="font-family:'Fira Mono',monospace;font-size:0.82rem;padding:0.3rem 0.6rem;background:rgba(45,106,63,0.1);border:1px solid #1f4f2f;border-radius:5px;color:#2D6A3F;">${w}</div>
+        <div style="font-family:'Fira Mono',monospace;font-size:0.7rem;color:#888888;margin-top:0.2rem;">#${ids[i]}</div>
+      </div>`).join('')}
+    </div>
+    <div style="font-size:0.78rem;color:#888888;text-align:center;">Each word → integer token ID from vocabulary</div>
+  </div>`;
+}
+
+function embedDiagram(){
+  return `<div style="width:100%;text-align:center;">
+    <div style="display:inline-flex;align-items:center;gap:1.5rem;">
+      <div style="font-family:'Fira Mono',monospace;font-size:0.9rem;padding:0.5rem 1rem;background:rgba(45,106,63,0.1);border:1px solid #1f4f2f;border-radius:6px;color:#2D6A3F;">"charity"<br><span style="font-size:0.7rem;color:#888888;">#8432</span></div>
+      <div style="color:#A3217A;font-size:1.2rem;">→</div>
+      <div style="font-family:'Fira Mono',monospace;font-size:0.72rem;color:#4A4A4A;line-height:1.5;text-align:left;">
+        [0.31, −0.14, 0.82, 0.05,<br>
+        −0.67, 0.23, 0.11, −0.44,<br>
+        0.59, 0.08, … <span style="color:#888888">(768 dims)</span>]
+      </div>
+    </div>
+    <div style="margin-top:1rem;font-size:0.78rem;color:#888888;">"nonprofit" would produce a <em>similar</em> vector — that's the semantic structure learned during pre-training</div>
+  </div>`;
+}
+
+function posDiagram(){
+  return `<div style="width:100%;">
+    <div style="display:flex;justify-content:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.7rem;">
+      ${['The','charity','failed','…','funding'].map((w,i)=>`
+        <div style="text-align:center;min-width:70px;">
+          <div style="font-family:'Fira Mono',monospace;font-size:0.78rem;padding:0.25rem 0.4rem;background:rgba(45,106,63,0.08);border:1px solid #1f4f2f;border-radius:4px;color:#2D6A3F;margin-bottom:0.2rem;">${w}</div>
+          <div style="font-size:0.65rem;color:#888888;">emb</div>
+          <div style="font-size:1rem;color:#A3217A;line-height:1;">+</div>
+          <div style="font-family:'Fira Mono',monospace;font-size:0.65rem;padding:0.2rem 0.3rem;background:rgba(163,33,122,0.08);border:1px solid #7a1a5c;border-radius:3px;color:#A3217A;">pos ${i===4?'8':i}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="font-size:0.78rem;color:#888888;text-align:center;">Positional encodings are added to embeddings so token order is preserved</div>
+  </div>`;
+}
+
+function attnDiagram(){
+  const words = ['The','charity','failed','to','meet','its','targets'];
+  const scores = [0.04, 0.31, 1.0, 0.08, 0.42, 0.09, 0.38];
+  const maxS = Math.max(...scores);
+  return `<div style="width:100%;">
+    <div style="font-size:0.78rem;color:#888888;text-align:center;margin-bottom:0.7rem;">Attention weights when processing <span style="color:#A3217A;font-family:'Fira Mono',monospace;">failed</span> →</div>
+    <div style="display:flex;gap:0.4rem;justify-content:center;align-items:flex-end;height:80px;flex-wrap:nowrap;">
+      ${words.map((w,i)=>{
+        const h = Math.round((scores[i]/maxS)*70);
+        const isTarget = i===2;
+        const col = isTarget?'#A3217A':scores[i]>0.25?'#2D6A3F':'#D4D4D4';
+        const tc = isTarget?'#A3217A':scores[i]>0.25?'#2D6A3F':'#888888';
+        return `<div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;">
+          <div style="font-size:0.68rem;color:${tc};font-family:'Fira Mono',monospace;">${scores[i].toFixed(2)}</div>
+          <div style="width:36px;height:${h}px;background:${col};border-radius:3px 3px 0 0;transition:height 0.3s;"></div>
+          <div style="font-family:'Fira Mono',monospace;font-size:0.72rem;color:${tc};">${w}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function stackDiagram(){
+  return `<div style="width:100%;text-align:center;">
+    <div style="display:inline-flex;flex-direction:column;gap:0.4rem;align-items:center;">
+      ${[...Array(4)].map((_,i)=>`
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <div style="font-size:0.7rem;color:#888888;width:50px;text-align:right;">Layer ${i+1}</div>
+          <div style="display:flex;gap:0.4rem;">
+            <div style="padding:0.3rem 0.6rem;background:rgba(45,106,63,${0.08+i*0.04});border:1px solid #1f4f2f;border-radius:5px;font-size:0.75rem;color:#2D6A3F;font-family:'Fira Mono',monospace;">Self-Attention</div>
+            <div style="padding:0.3rem 0.6rem;background:rgba(163,33,122,${0.08+i*0.04});border:1px solid #7a1a5c;border-radius:5px;font-size:0.75rem;color:#A3217A;font-family:'Fira Mono',monospace;">Feed-Forward</div>
+          </div>
+        </div>
+      `).join('')}
+      <div style="font-size:0.7rem;color:#888888;margin-top:0.3rem;">…up to 96 layers in GPT-4</div>
+    </div>
+  </div>`;
+}
+
+function outputDiagram(){
+  const classes = [['Negative',0.78],['Neutral',0.14],['Positive',0.08]];
+  return `<div style="width:100%;max-width:320px;margin:0 auto;">
+    <div style="font-size:0.78rem;color:#888888;text-align:center;margin-bottom:0.8rem;">Softmax output — sentiment classification</div>
+    ${classes.map(([lbl,p])=>`
+      <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.5rem;">
+        <div style="font-size:0.82rem;color:#4A4A4A;font-family:'Fira Mono',monospace;width:80px;">${lbl}</div>
+        <div style="flex:1;background:var(--surface2);border-radius:20px;height:16px;overflow:hidden;border:1px solid var(--border);">
+          <div style="height:100%;width:${p*100}%;background:${lbl==='Negative'?'#A3217A':lbl==='Neutral'?'#7a1a5c':'#2D6A3F'};border-radius:20px;"></div>
+        </div>
+        <div style="font-family:'Fira Mono',monospace;font-size:0.78rem;color:#4A4A4A;width:40px;">${(p*100).toFixed(0)}%</div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+initTransformer();
+
+/* ─── ATTENTION DEMO ─── */
+const ATTN_SENT = ["The","charity","failed","to","meet","its","targets","despite","funding"];
+const ATTN_MAP = {
+  "The":      {hi:["charity"],mid:["targets"],e:"\"The\" primarily attends to the noun it introduces — <em>charity</em> — establishing the clause subject."},
+  "charity":  {hi:["failed","funding"],mid:["The","targets"],e:"<em>charity</em> as subject attends to its main verb <em>failed</em> and to <em>funding</em> as the contrastive contextual factor."},
+  "failed":   {hi:["charity","meet","targets"],mid:["despite"],e:"The core verb <em>failed</em> attends to its subject, the complement infinitive <em>meet</em>, and the object <em>targets</em>."},
+  "to":       {hi:["meet","failed"],mid:[],e:"A function word attending to the verb it introduces (<em>meet</em>) and back to <em>failed</em>."},
+  "meet":     {hi:["targets","failed"],mid:["charity","despite"],e:"<em>meet</em> attends to its object (<em>targets</em>) and the superordinate verb (<em>failed</em>) that governs the whole infinitive clause."},
+  "its":      {hi:["charity","targets"],mid:[],e:"The possessive <em>its</em> attends to its referent <em>charity</em> and the noun it modifies — <em>targets</em>."},
+  "targets":  {hi:["meet","its","failed"],mid:["charity","despite"],e:"<em>targets</em> as the object attends strongly to the verb <em>meet</em>, the possessive <em>its</em>, and back to <em>failed</em> for clause-level context."},
+  "despite":  {hi:["funding","failed","targets"],mid:["charity"],e:"The contrastive conjunction <em>despite</em> bridges both sides of the contrast — what was available (<em>funding</em>) and what happened (<em>failed to meet targets</em>)."},
+  "funding":  {hi:["despite","charity"],mid:["failed","targets"],e:"<em>funding</em> as the contrastive NP attends to <em>despite</em> (which frames its role) and <em>charity</em> as the receiving entity."},
+};
+
+function initAttn(){
+  const c = document.getElementById('attnSent'); c.innerHTML='';
+  ATTN_SENT.forEach(w=>{
+    const t = document.createElement('span');
+    t.className='token'; t.textContent=w;
+    t.onclick=()=>selectAttn(w);
+    c.appendChild(t);
+  });
+}
+
+function selectAttn(word){
+  const info = ATTN_MAP[word]||{hi:[],mid:[],e:'No data.'};
+  document.querySelectorAll('.token').forEach(t=>{
+    const w=t.textContent;
+    t.className='token';
+    if(w===word) t.classList.add('selected');
+    else if(info.hi.includes(w)) t.classList.add('hi1');
+    else if(info.mid.includes(w)) t.classList.add('hi2');
+  });
+  document.getElementById('attnExplain').innerHTML =
+    `<strong style="color:#A3217A;font-family:'Fira Mono',monospace;">${word}</strong> — ${info.e}
+    <br><br>
+    <span style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.78rem;margin-right:0.8rem;">
+      <span style="display:inline-block;width:12px;height:12px;background:rgba(45,106,63,0.25);border:1px solid #2D6A3F;border-radius:2px;"></span> strong attention
+    </span>
+    <span style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.78rem;">
+      <span style="display:inline-block;width:12px;height:12px;background:rgba(45,106,63,0.10);border:1px solid #1f4f2f;border-radius:2px;"></span> moderate attention
+    </span>`;
+}
+initAttn();
+
+/* ─── USE CASE CARDS ─── */
+const USECASES = [
+  {icon:'🏷️',name:'Text Classification',tag:'supervised · fine-tuned',
+   body:'Assign documents or passages to predefined categories — sentiment, topic, organisational type, funding source, policy domain. A fine-tuned BERT model can replicate a human coding scheme on tens of thousands of documents with high reliability.',
+   example:'Classifying 40,000 SCVO member survey responses by expressed need type — replacing six months of manual thematic coding.',
+   tools:['BERT','RoBERTa','SetFit','scikit-learn']},
+  {icon:'🔍',name:'Named Entity Recognition',tag:'token-level · extraction',
+   body:'Automatically identify and extract mentions of organisations, people, places, dates, financial amounts, and custom entity types from large corpora. Enables systematic extraction of relational data from unstructured text.',
+   example:'Extracting all named funders, beneficiary groups, and geographic areas from a corpus of Social Enterprise Scotland member reports.',
+   tools:['spaCy','flair','GLiNER','Hugging Face NER']},
+  {icon:'📊',name:'Topic Modelling',tag:'unsupervised · exploratory',
+   body:'Discover latent themes across document collections without predefined categories. BERTopic uses transformer embeddings and hierarchical clustering to produce coherent, human-interpretable topics with substantially less noise than LDA.',
+   example:'Identifying emergent themes across 15 years of OSCR charity accounts to track how the Scottish third sector\'s expressed priorities shifted post-austerity.',
+   tools:['BERTopic','Top2Vec','LDA (baseline)','umap-learn']},
+  {icon:'🔗',name:'Semantic Search & Similarity',tag:'embedding-based · retrieval',
+   body:'Find documents by meaning rather than exact keyword match. Embedding each document as a vector allows cosine similarity search — useful for identifying thematically overlapping organisations, duplicate programme descriptions, or policy echoes across documents.',
+   example:'Identifying CIC and registered charity dyads delivering similar programmes using UKCAT activity tags combined with embedding similarity of annual report narratives.',
+   tools:['sentence-transformers','FAISS','ChromaDB','Annoy']},
+  {icon:'📝',name:'Summarisation & Extraction',tag:'generative · abstractive',
+   body:'Condense annual reports, Hansard records, policy consultations, or interview transcripts into structured summaries. Can be extractive (selecting passages) or abstractive (generating new text). Powerful combined with structured output schemas.',
+   example:'Generating standardised impact summaries from CIC34 annual reports for a public-facing database, preserving key indicators while reducing document length by 85%.',
+   tools:['GPT-4','BART','Pegasus','Llama-3']},
+  {icon:'📈',name:'Feature Extraction for Modelling',tag:'quantitative · embedding features',
+   body:'Use transformer embeddings as variables in downstream quantitative models. Measures of linguistic complexity, sentiment trajectory, uncertainty language, or mission proximity can be derived from embeddings and included as covariates in regression, survival, or panel models.',
+   example:'Constructing a "financial uncertainty" index from BERT embeddings of management commentary sections for inclusion in a panel model of charity dissolution risk.',
+   tools:['sentence-transformers','sklearn','Stata·Python bridge','R·reticulate']},
+];
+
+function initUsecases(){
+  const g = document.getElementById('usecaseGrid');
+  g.innerHTML = USECASES.map((u,i)=>`
+    <div class="usecase-card" onclick="toggleUC(${i})" id="uc${i}">
+      <div class="uc-header">
+        <div class="uc-icon">${u.icon}</div>
+        <div>
+          <div class="uc-name">${u.name}</div>
+          <div class="uc-tag">${u.tag}</div>
+        </div>
+      </div>
+      <div class="uc-body" id="ucb${i}">
+        <p style="margin:0 0 0.5rem;">${u.body}</p>
+        <div class="uc-example">${u.example}</div>
+        <div class="uc-tools">${u.tools.map(t=>`<span class="uc-tool">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleUC(i){
+  const b = document.getElementById('ucb'+i);
+  const c = document.getElementById('uc'+i);
+  b.classList.toggle('open');
+  c.classList.toggle('expanded');
+}
+initUsecases();
+
+/* ─── GLOSSARY ─── */
+const GLOSSARY = [
+  ['Neural Network','A system of layered computational units that learns to map inputs to outputs by adjusting millions of numerical weights through exposure to training data.'],
+  ['Weight / Parameter','A learned numerical value determining the strength of a connection between neurons. A large language model has billions of these.'],
+  ['Backpropagation','The algorithm for computing how much each weight contributed to a prediction error, enabling all weights to be updated simultaneously.'],
+  ['Gradient Descent','The iterative optimisation process that nudges weights in the direction that reduces prediction error — the "learning" mechanism.'],
+  ['Transformer','A neural architecture (Vaswani et al., 2017) that processes all input tokens simultaneously using self-attention, enabling modelling of long-range dependencies.'],
+  ['Token','The atomic unit of text a model processes — typically a word or sub-word fragment. Vocabulary sizes range from 32k to 128k tokens.'],
+  ['Embedding','A dense numerical vector representing the meaning of a token. Semantically similar tokens occupy proximate regions of this high-dimensional space.'],
+  ['Self-Attention','A mechanism computing pairwise relevance scores between all tokens in a sequence, producing contextualised representations that encode surrounding context.'],
+  ['Multi-Head Attention','Running multiple parallel attention operations, each potentially capturing different relationship types (syntax, semantics, coreference, etc.).'],
+  ['Fine-Tuning','Continuing pre-training on task-specific labelled data, specialising the model\'s representations for a target domain or task.'],
+  ['BERT','Bidirectional Encoder Representations from Transformers. Attends to context from both directions; the dominant architecture for classification tasks in social science NLP.'],
+  ['GPT','Generative Pre-trained Transformer. Unidirectional (left-to-right) decoder architecture; suited to text generation and instruction following.'],
+  ['Zero/Few-Shot','Using an LLM for a task without fine-tuning. Zero-shot: instruction only. Few-shot: a small number of labelled examples embedded in the prompt.'],
+  ['BERTopic','A topic modelling framework combining transformer sentence embeddings, UMAP dimensionality reduction, and HDBSCAN clustering to identify coherent document themes.'],
+  ['Hallucination','The tendency of generative LLMs to produce confident but factually incorrect statements. A key validity concern for research applications.'],
+];
+
+function initGloss(){
+  document.getElementById('glossList').innerHTML = GLOSSARY.map(([t,d])=>`
+    <div class="gloss-item">
+      <span class="g-term">${t}</span>
+      <span class="g-def">${d}</span>
+    </div>`).join('');
+}
+initGloss();
+</script>
+</body>
+</html>
