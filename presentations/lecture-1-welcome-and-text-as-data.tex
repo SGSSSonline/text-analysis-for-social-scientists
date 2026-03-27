@@ -153,7 +153,39 @@
 \end{frame}
 
 % -------------------------------------------------------
-% Slide 7: Key concepts
+% Slide 7: From text to numbers
+% -------------------------------------------------------
+\begin{frame}{From Text to Numbers}
+    \small
+    The \textbf{Represent} step converts raw text into a numerical format that algorithms can process.
+
+    \vspace{0.2cm}
+    \textbf{Raw text:}\\[0.1cm]
+    {\footnotesize
+    Doc~1: ``NHS hospital funding''\\
+    Doc~2: ``Tax and growth''\\
+    Doc~3: ``Hospital staff pay and funding''}
+
+    \vspace{0.2cm}
+    \textbf{Document--term matrix} (after removing stopwords):
+
+    \vspace{0.1cm}
+    \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}lccccccc@{}}
+        \toprule
+        & \textbf{nhs} & \textbf{hospital} & \textbf{funding} & \textbf{tax} & \textbf{growth} & \textbf{staff} & \textbf{pay} \\
+        \midrule
+        Doc~1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+        Doc~2 & 0 & 0 & 0 & 1 & 1 & 0 & 0 \\
+        Doc~3 & 0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+% -------------------------------------------------------
+% Slide 8: Key concepts
 % -------------------------------------------------------
 \begin{frame}{Key Concepts}
     \begin{description}[\textbf{Vocabulary}]

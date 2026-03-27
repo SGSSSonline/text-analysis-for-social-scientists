@@ -63,8 +63,8 @@
 
         % Steps
         \node[gen step] (step1) {1. Choose a mix\\of topics};
-        \node[gen step, right=of step1] (step2) {2. For each word,\\pick a topic};
-        \node[gen step, right=of step2] (step3) {3. Pick a word from\\that topic};
+        \node[gen step, right=of step1] (step2) {2. Pick a topic};
+        \node[gen step, right=of step2] (step3) {3. Pick a word\\from that topic};
 
         % Arrows
         \draw[arrow style] (step1) -- (step2);
@@ -129,28 +129,32 @@
 
             \vspace{0.2cm}
             \begin{center}
-            \begin{tikzpicture}
-                \tikzset{
-                    topicword/.style={font=\scriptsize, anchor=west},
-                }
-                % Topic box
-                \node[rectangle, draw=sgsssGreen, fill=sgsssGreen!10, thick, rounded corners,
-                    minimum width=3.8cm, minimum height=3.2cm, anchor=north west] at (0,0) {};
-                \node[font=\small\bfseries, anchor=north west, text=sgsssGreen] at (0.15,-0.1) {Topic 1 (Health)};
+            \begin{tikzpicture}[yscale=0.45]
+                % Horizontal bar chart (descending probability)
+                \fill[sgsssMagenta!70] (0,5) rectangle (3.0,5.7);
+                \fill[sgsssMagenta!70] (0,4) rectangle (2.5,4.7);
+                \fill[sgsssMagenta!70] (0,3) rectangle (2.0,3.7);
+                \fill[sgsssMagenta!70] (0,2) rectangle (1.6,2.7);
+                \fill[sgsssMagenta!70] (0,1) rectangle (1.2,1.7);
+                \fill[sgsssMagenta!70] (0,0) rectangle (0.9,0.7);
 
-                % Word list with bars (manually expanded to avoid \foreach in beamer)
-                \fill[sgsssGreen!50] (0.15,-0.55) rectangle (1.27,-0.30);
-                \node[topicword] at (1.37,-0.425) {health};
-                \fill[sgsssGreen!50] (0.15,-0.93) rectangle (1.11,-0.68);
-                \node[topicword] at (1.21,-0.805) {NHS};
-                \fill[sgsssGreen!50] (0.15,-1.31) rectangle (0.95,-1.06);
-                \node[topicword] at (1.05,-1.185) {hospital};
-                \fill[sgsssGreen!50] (0.15,-1.69) rectangle (0.83,-1.44);
-                \node[topicword] at (0.93,-1.565) {patients};
-                \fill[sgsssGreen!50] (0.15,-2.07) rectangle (0.71,-1.82);
-                \node[topicword] at (0.81,-1.945) {care};
-                \fill[sgsssGreen!50] (0.15,-2.45) rectangle (0.59,-2.20);
-                \node[topicword] at (0.69,-2.325) {funding};
+                % Axes
+                \draw[thick] (0,0) -- (3.5,0);
+                \draw[thick] (0,0) -- (0,6.2);
+
+                % Word labels on y-axis
+                \node[left, font=\scriptsize] at (0,5.35) {health};
+                \node[left, font=\scriptsize] at (0,4.35) {NHS};
+                \node[left, font=\scriptsize] at (0,3.35) {hospital};
+                \node[left, font=\scriptsize] at (0,2.35) {patients};
+                \node[left, font=\scriptsize] at (0,1.35) {care};
+                \node[left, font=\scriptsize] at (0,0.35) {funding};
+
+                % Axis label
+                \node[left, font=\scriptsize] at (0,6.2) {$\phi$};
+
+                % Title
+                \node[above, font=\scriptsize\bfseries] at (1.75,6.5) {Topic 1 (Health)};
             \end{tikzpicture}
             \end{center}
 
@@ -164,17 +168,17 @@
 % -------------------------------------------------------
 \begin{frame}{Example: Topics from Parliamentary Debates}
     \small
-    {\footnotesize LDA with \(K=4\) topics fitted to UK House of Commons debates. Top 10 words per topic:}
+    {\footnotesize LDA with \(K=4\) topics fitted to UK House of Commons debates. Top 5 words per topic:}
 
     \vspace{0.2cm}
     \begin{tabular}{@{}cl@{}}
         \toprule
-        \textbf{Topic} & \textbf{Top 10 Words} \\
+        \textbf{Topic} & \textbf{Top 5 Words} \\
         \midrule
-        \textbf{\color{sgsssMagenta} 1 --- Health} & health, NHS, hospital, patients, care, funding, treatment, service, staff, mental \\[0.15cm]
-        \textbf{\color{sgsssGreen} 2 --- Education} & education, school, university, students, teachers, learning, skills, children, funding, curriculum \\[0.15cm]
-        \textbf{\color{sgsssBlack} 3 --- Economy} & economy, growth, tax, business, employment, trade, investment, inflation, budget, debt \\[0.15cm]
-        \textbf{\color{sgsssMagenta!60!sgsssBlack} 4 --- Security} & security, defence, military, police, terrorism, intelligence, border, crime, forces, threat \\
+        \textbf{\color{sgsssMagenta} 1 --- Health} & health, NHS, hospital, patients, care \\[0.15cm]
+        \textbf{\color{sgsssGreen} 2 --- Education} & education, school, university, students, teachers \\[0.15cm]
+        \textbf{\color{sgsssBlack} 3 --- Economy} & economy, growth, tax, business, employment \\[0.15cm]
+        \textbf{\color{sgsssMagenta!60!sgsssBlack} 4 --- Security} & security, defence, military, police, terrorism \\
         \bottomrule
     \end{tabular}
 
@@ -228,12 +232,12 @@
     \end{itemize}
 
     \vspace{0.2cm}
-    \begin{alertblock}{Common pitfalls}
-        \footnotesize
-        \textbf{Junk topics} (stopwords, boilerplate) \(\cdot\)
-        \textbf{Over-splitting} (one theme spread across several topics) \(\cdot\)
-        \textbf{Label bias} (reading meaning into vague word lists)
-    \end{alertblock}
+    \textbf{Common pitfalls:}
+    \begin{itemize}\setlength\itemsep{0pt}
+        \item \faIcon{trash-alt} \textbf{Junk topics} --- stopwords, boilerplate
+        \item \faIcon{expand-arrows-alt} \textbf{Over-splitting} --- one theme spread across several topics
+        \item \faIcon{exclamation-triangle} \textbf{Label bias} --- reading meaning into vague word lists
+    \end{itemize}
 \end{frame}
 
 % -------------------------------------------------------
@@ -266,7 +270,7 @@
                 \node[meta node] (meta) {Metadata\\(party, year)};
                 \node[stm node, below left=0.5cm and -0.2cm of meta] (prev) {Topic\\prevalence};
                 \node[stm node, below right=0.5cm and -0.2cm of meta] (cont) {Topic\\content};
-                \node[stm node, below=1.0cm of meta] (topics) {Discovered\\topics};
+                \node[stm node, below=0.5cm of prev, xshift=1.05cm] (topics) {Discovered\\topics};
 
                 \draw[arrow style] (meta) -- (prev);
                 \draw[arrow style] (meta) -- (cont);
